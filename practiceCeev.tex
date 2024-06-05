@@ -1,0 +1,193 @@
+%% -*- coding: utf-8 -*-
+\documentclass[12pt,a4paper]{scrartcl} 
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{indentfirst}
+\usepackage{misccorr}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\begin{document}
+	\begin{titlepage}
+		\begin{center}
+			\large
+			МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ
+			
+			Федеральное государственное бюджетное образовательное учреждение высшего образования
+			
+			\textbf{АДЫГЕЙСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ}
+			\vspace{0.25cm}
+			
+			Инженерно-физический факультет
+			
+			Кафедра автоматизированных систем обработки информации и управления
+			\vfill
+
+			\vfill
+			
+			\textsc{Отчет по практике}\\[5mm]
+			
+			\LARGE\textit{Вариант 5}
+			
+			{\LARGE Нахождение обратной матрицы}
+			\bigskip
+			
+			1 курс, группа 1ИВТ АСОИУ
+		\end{center}
+		\vfill
+		
+		\newlength{\ML}
+		\settowidth{\ML}{«\underline{\hspace{0.7cm}}» \underline{\hspace{2cm}}}
+		\hfill\begin{minipage}{0.5\textwidth}
+			Выполнил:\\
+			\underline{\hspace{\ML}} В.\,Т.~Цеев\\
+			«\underline{\hspace{0.7cm}}» \underline{\hspace{2cm}} 2024 г.
+		\end{minipage}%
+		\bigskip
+		
+		\hfill\begin{minipage}{0.5\textwidth}
+			Руководитель:\\
+			\underline{\hspace{\ML}} С.\,В.~Теплоухов\\
+			«\underline{\hspace{0.7cm}}» \underline{\hspace{2cm}} 2024 г.
+		\end{minipage}%
+		
+		
+		\vfill
+		
+		
+		
+		\begin{center}
+			
+			Майкоп, 2024 г.
+		\end{center}
+	\end{titlepage}
+\LARGE{Содержание}
+
+\begin{enumerate}
+	\item Задача
+	\item Пример кода, решающего данную задачу
+	\item Скриншот работы программы
+\end{enumerate}
+\section{Задача}
+Вычислить матрицу обратную заданной.
+\section{Пример кода}
+\label{sec:exp:code}
+\begin{verbatim}
+#include <iostream>
+
+void inversion(double** A, int N)
+{
+	double temp;
+	
+	double** E = new double* [N];
+	
+	for (int i = 0; i < N; i++)
+	E[i] = new double[N];
+	
+	for (int i = 0; i < N; i++)
+	for (int j = 0; j < N; j++)
+	{
+		E[i][j] = 0.0;
+		
+		if (i == j)
+		E[i][j] = 1.0;
+	}
+	
+	for (int k = 0; k < N; k++)
+	{
+		temp = A[k][k];
+		
+		for (int j = 0; j < N; j++)
+		{
+			A[k][j] /= temp;
+			E[k][j] /= temp;
+		}
+		
+		for (int i = k + 1; i < N; i++)
+		{
+			temp = A[i][k];
+			
+			for (int j = 0; j < N; j++)
+			{
+				A[i][j] -= A[k][j] * temp;
+				E[i][j] -= E[k][j] * temp;
+			}
+		}
+	}
+	
+	for (int k = N - 1; k > 0; k--)
+	{
+		for (int i = k - 1; i >= 0; i--)
+		{
+			temp = A[i][k];
+			
+			for (int j = 0; j < N; j++)
+			{
+				A[i][j] -= A[k][j] * temp;
+				E[i][j] -= E[k][j] * temp;
+			}
+		}
+	}
+	
+	for (int i = 0; i < N; i++)
+	for (int j = 0; j < N; j++)
+	A[i][j] = E[i][j];
+	
+	for (int i = 0; i < N; i++)
+	delete[] E[i];
+	
+	delete[] E;
+}
+
+int main()
+{
+	int N;
+	
+	std::cout << "Enter N: ";
+	std::cin >> N;
+	
+	double** matrix = new double* [N];
+	
+	for (int i = 0; i < N; i++)
+	matrix[i] = new double[N];
+	
+	for (int i = 0; i < N; i++)
+	for (int j = 0; j < N; j++)
+	{
+		std::cout << "Enter matrix[" << i << "]
+		[" << j << "] = ";
+		std::cin >> matrix[i][j];
+	}
+	
+	inversion(matrix, N);
+	
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		std::cout << matrix[i][j] << "  ";
+		
+		std::cout << std::endl;
+	}
+	
+	for (int i = 0; i < N; i++)
+	delete[] matrix[i];
+	
+	delete[] matrix;
+	
+	std::cin.get();
+	return 0;
+}
+	
+	
+	
+\end{verbatim}
+\vfill
+
+
+\section{Скриншот работы программы}
+\label{sec:picexample}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{practic.png}
+	\caption{Результат}\label{fig:par}
+\end{figure}
+\end{document}
